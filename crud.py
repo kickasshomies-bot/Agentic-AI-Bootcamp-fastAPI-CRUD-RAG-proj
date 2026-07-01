@@ -217,8 +217,17 @@ def generate_recommendation(query: str, items: list[dict]):
 
     full_prompt = f"System Instruction:\n{system_instruction}\n\nUser Prompt:\n{user_prompt}"
 
+    # Reload dotenv dynamically in case of recent edits, and evaluate key
+    load_dotenv(dotenv_path="c:/class_proj/temp_start/.env")
+    api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+    has_live_gemini = False
+
+    if api_key:
+        genai.configure(api_key=api_key)
+        has_live_gemini = True
+
     # 3. Call LLM or Simulate
-    if has_gemini:
+    if has_live_gemini:
         try:
             # Use 'gemini-2.5-flash' which is supported by this API key and environment
             model = genai.GenerativeModel(model_name='gemini-2.5-flash')
